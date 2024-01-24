@@ -1,5 +1,15 @@
-// volgorde van de scenes
+document.addEventListener("DOMContentLoaded", function () {
+  displayAlert();
+  handleNextSceneBtn();
+});
 
+function displayAlert() {
+  alert(
+    "Voor de beste ervaring van deze applicatie is toestemming tot de bewegingsgegevens van uw apparaat vereist. Deze toestemming verloopt na deze sessie."
+  );
+}
+
+// volgorde van de scenes
 const scenes = [
   `<section id="section-1" >
     <button class="start-btn" id="request-btn">
@@ -30,11 +40,13 @@ const scenes = [
 
   `<div id="container">
     <div id="map">
-      <img src="/assets/images/hut-geen-tekst.jpeg" />
+      <img id="hologram" src="/assets/images/hut-geen-tekst.jpeg" />
       <img class="marker hangmat"  src="/assets/images/hangmat-tekst.png"/>
       <img class="marker pan" src="/assets/images/pan-tekst.png"/>
+      <img class="hangmat-hint hint" src="/assets/images/hint-dark-green.png"/>
+      <img class="pan-hint hint" src="/assets/images/hint-dark-green.png"/>
     </div>
-    <div class="next-scene-btn hut-next-button">Next</div>
+    <div class="next-scene-btn hut-next-button"></div>
   </div>`,
 
   `<section id="section-4">
@@ -81,19 +93,17 @@ function transitionScenes() {
       window.scrollTo(0, document.body.scrollHeight);
     }
   }
+  handleNextSceneBtn();
 }
 
-document.body.addEventListener("click", function (event) {
-  const target = event.target;
-
-  if (target.classList.contains("next-scene-btn")) {
-    transitionScenes();
-  }
-});
+function handleNextSceneBtn() {
+  const nextSceneBtns = document.querySelectorAll(".next-scene-btn");
+  nextSceneBtns.forEach((btn) => {
+    btn.addEventListener("click", () => transitionScenes());
+  });
+}
 
 // zoom function & device motion
-if (currentScene === 2) {
-}
 function initializeZoomAndVisibility() {
   var zoomer = panzoom(document.querySelector("#container"), {
     maxZoom: 20,
@@ -102,7 +112,7 @@ function initializeZoomAndVisibility() {
       event.target.classList.contains("next-scene-btn") ? false : true,
   });
 
-  let timeoutId;
+  let timeout;
 
   zoomer.on("zoom", (event) =>
     document.querySelectorAll(".marker[data-visible]").forEach(checkIfZoomed)
@@ -113,16 +123,21 @@ function initializeZoomAndVisibility() {
     let markerSize = marker.getBoundingClientRect();
     if (markerSize.width / window.innerWidth > treshold) {
       if (!marker.hasAttribute("data-active")) {
-        clearTimeout(timeoutId);
+        clearTimeout(timeout);
 
-        timeoutId = setTimeout(() => {
+        timeout = setTimeout(() => {
           marker.toggleAttribute("data-active");
           console.log("Activated", marker.id);
+
+          const hints = document.querySelectorAll(".hint");
+          hints.forEach((hint) => {
+            hint.style.display = "none";
+          });
         }, 2000);
       }
     } else {
       if (marker.hasAttribute("data-active")) {
-        clearTimeout(timeoutId);
+        clearTimeout(timeout);
 
         marker.setAttribute("data-active", "");
         console.log("De-activated", marker.id);
@@ -144,17 +159,7 @@ function initializeZoomAndVisibility() {
     .forEach((element) => observer.observe(element));
 }
 
-window.addEventListener("load", (event) => {
-  setTimeout(() => {
-    window.scrollTo({
-      left: window.innerWidth,
-      behavior: "smooth",
-    });
-  }, 0);
-});
-
 // device motion event
-
 function permission() {
   if (
     typeof DeviceMotionEvent !== "undefined" &&
@@ -174,26 +179,20 @@ function permission() {
   }
 }
 
-function handleMotion(e) {
-  // Adjust the scaling factor for more pronounced movement
-  const scrollFactor = 1;
-  const scrollAmount = e.accelerationIncludingGravity.x * scrollFactor;
-
-  const hologram = document.getElementById("hologram");
-  hologram.style.transform = `translateX(${-scrollAmount}vw)`;
-}
-
 const btn = document.getElementById("request");
+btn.addEventListener("click", function () {
+  const accessContainer = document.querySelector("#access-container");
+  const startButton = document.querySelector(".start-btn");
+  accessContainer.style.display = "none";
+  startButton.style.display = "inline-block";
+});
+
 btn.addEventListener("click", permission);
 
-// const btn = document.getElementById("request");
-// btn.addEventListener("click", permission);
-
 window.addEventListener("deviceorientation", (evt) => {
-  // Adjust the scaling factor for more pronounced movement
   const angle = -evt.gamma;
-  const rotation = Math.min(75, Math.max(-75, angle)); // You can change this value
+  const rotation = Math.min(75, Math.max(-75, angle));
 
-  const hologram = document.getElementById("hologram");
-  hologram.style.transform = `translateX(${-rotation}vw)`;
+  const map = document.getElementById("map");
+  map.style.transform = `translateX(${-rotation}vw)`;
 });
