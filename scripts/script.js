@@ -34,6 +34,20 @@ const scenes = [
         draggable="false"
         class="begin-planten begin-plant1 draggable"
       />
+      <img
+        id="swipe-image"
+        src="/assets/images/bohios-planten2.png"
+        alt="Swipe Image"
+        draggable="false"
+        class="begin-planten begin-plant2 draggable"
+      />
+      <img
+        id="swipe-image"
+        src="/assets/images/bohios-planten3.png"
+        alt="Swipe Image"
+        draggable="false"
+        class="begin-planten begin-plant3 draggable"
+      />
     </div>
     <div class="next-scene-btn drag-next-button"></div>
   </section>`,
@@ -63,24 +77,25 @@ function transitionScenes() {
   if (currentScene < scenes.length) {
     const mainElement = document.querySelector("main");
     mainElement.innerHTML = scenes[currentScene];
-    // array, for each, herhalen voor elke image
 
     if (currentScene === 1) {
-      const draggable = document.querySelector(".draggable");
+      const draggable = document.querySelectorAll(".draggable");
 
-      Draggable.create(draggable, {
-        type: "x,y",
-        edgeResistance: 0.65,
-        onDragEnd: function () {
-          if (this.x > window.innerWidth || this.y > window.innerHeight) {
-            gsap.to(draggable, {
-              x: window.innerWidth + 100,
-              y: window.innerHeight + 100,
-              ease: "power2.inOut",
-              duration: 0.5,
-            });
-          }
-        },
+      draggable.forEach((draggable) => {
+        Draggable.create(draggable, {
+          type: "x,y",
+          edgeResistance: 0.65,
+          onDragEnd: function () {
+            if (this.x > window.innerWidth || this.y > window.innerHeight) {
+              gsap.to(draggable, {
+                x: window.innerWidth + 100,
+                y: window.innerHeight + 100,
+                ease: "power2.inOut",
+                duration: 0.5,
+              });
+            }
+          },
+        });
       });
     }
 

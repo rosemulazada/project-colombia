@@ -17,11 +17,20 @@ img.begin-planten {
   height: 50vh;
 }
 
-/* img.begin-plant1 {
-  top: 100px;
-  right: 30px;
-  transform: rotate(-50deg);
-} */
+img.begin-plant1 {
+  top: -20rem;
+  right: 0rem;
+}
+
+img.begin-plant2 {
+  height: 80vh;
+}
+
+img.begin-plant3 {
+  height: 110vh;
+  left: -3rem;
+  bottom: -1rem;
+}
 
 /* navigation */
 button.next-scene-btn {
