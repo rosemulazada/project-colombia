@@ -20,10 +20,10 @@ const scenes = [
     </button>
   </section>`,
 
-  `<section id="section-2">
+  `<section id="section-2" class="map">
     <img
       id="bohios"
-      src="/assets/images/begin-bohios.jpg"
+      src="/assets/images/begin-bohios.png"
       alt="Afbeelding van de bohios: woonplek van de Kogui."
     />
     <div id="swipe-container">
@@ -53,7 +53,7 @@ const scenes = [
   </section>`,
 
   `<div id="container">
-    <div id="map">
+    <div class="map" id="map">
       <img id="hologram" src="/assets/images/hut-geen-tekst.jpeg" />
       <img class="marker hangmat"  src="/assets/images/hangmat-tekst.png"/>
       <img class="marker pan" src="/assets/images/pan-tekst.png"/>
@@ -183,9 +183,7 @@ function permission() {
     DeviceMotionEvent.requestPermission()
       .then((response) => {
         if (response == "granted") {
-          window.addEventListener("devicemotion", (e) => {
-            handleMotion(e);
-          });
+          window.addEventListener("devicemotion", (e) => {});
         }
       })
       .catch(console.error);
@@ -208,6 +206,9 @@ window.addEventListener("deviceorientation", (evt) => {
   const angle = -evt.gamma;
   const rotation = Math.min(75, Math.max(-75, angle));
 
-  const map = document.getElementById("map");
-  map.style.transform = `translateX(${-rotation}vw)`;
+  const map = document.querySelector(".map");
+
+  if (map) {
+    map.style.transform = `translateX(${-rotation}vw)`;
+  }
 });

@@ -68,7 +68,9 @@ button.next-scene-btn {
 
 .drag-next-button {
   position: absolute;
-  top: 25rem;
+  top: 27rem;
+  right: 0rem;
+  left: 106rem;
   padding: 7rem 12rem;
   z-index: 0;
 }
